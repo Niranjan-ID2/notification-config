@@ -1,26 +1,22 @@
 package com.example.notificationconfig.serviceImpl;
 
 import com.example.notificationconfig.client.NovuClient;
-import com.example.notificationconfig.config.FeignConfig;
 import com.example.notificationconfig.dto.EventRequest;
-import com.example.notificationconfig.dto.TriggerEventRequest;
 import com.example.notificationconfig.mapper.EventRequestMapper;
 import com.example.notificationconfig.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class NovuNotificationService implements NotificationService {
 
     private final NovuClient novuClient;
-    EventRequestMapper eventRequestMapper = new EventRequestMapper();
+    private final EventRequestMapper eventRequestMapper;
 
     @Autowired
-    public NovuNotificationService(NovuClient novuClient) {
+    public NovuNotificationService(NovuClient novuClient, EventRequestMapper eventRequestMapper) {
         this.novuClient = novuClient;
+        this.eventRequestMapper = eventRequestMapper;
     }
 
     @Override

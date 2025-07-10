@@ -1,0 +1,53 @@
+# Test specific properties can go here.
+# For example, if you want to use an embedded database or different AWS/Novu keys for tests.
+
+server:
+  port: 0 # Use a random available port for tests to avoid conflicts
+
+spring:
+  application:
+    name: notification-service-test
+
+# Disable AWS SQS listeners during most tests unless specifically testing them
+# to avoid trying to connect to a real SQS queue.
+# For @SpringBootTest that needs SQS, this can be overridden via @TestPropertySource
+# or by not using this profile for those specific tests.
+cloud:
+  aws:
+    sqs:
+      enabled: false # Disable SQS listener auto-configuration for tests
+    region:
+      static: us-east-1 # Dummy region for tests
+    credentials:
+      access-key: testAccessKey
+      secret-key: testSecretKey
+
+novu:
+  api:
+    key: TEST_NOVU_API_KEY_FOR_UNIT_TESTS
+  workflow:
+    trigger:
+      id: test-email-workflow # Consistent trigger ID for tests
+
+logging:
+  level:
+    com.notification: DEBUG
+    org.springframework.web: INFO
+    io.novu: INFO # Novu SDK logging can be noisy, adjust as needed
+    com.amazonaws: WARN
+
+# Ensure SQS listener doesn't try to start for most tests
+# This is an alternative way to disable listeners if `cloud.aws.sqs.enabled=false` isn't sufficient
+# or if you use a different SQS library.
+# For `io.awspring.cloud:spring-cloud-starter-aws-messaging`:
+# The `cloud.aws.sqs.enabled` should work.
+# Another approach is to mock the SqsListener bean itself in test configurations.
+# Or, ensure the queue name property is not set or points to a dummy value that won't be listened to.
+# Example: cloud.aws.sqs.queue.name: "do-not-listen-test-queue"
+
+# If using @SqsListener, it will try to create a client.
+# Ensure the AWS SDK client beans are either mocked or configured for local testing (e.g. LocalStack)
+# if you run integration tests that involve SQS.
+# For component tests that don't need real AWS interaction, mocking SqsClient is a good idea.
+# The `spring-cloud-aws-autoconfigure` will try to create default SQS client.
+# Setting dummy credentials and region helps avoid errors if it does try.

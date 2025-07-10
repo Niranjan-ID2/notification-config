@@ -1,0 +1,43 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: notification-service
+
+# AWS Configuration
+cloud:
+  aws:
+    region:
+      static: YOUR_AWS_REGION # e.g., us-east-1
+    credentials:
+      access-key: YOUR_AWS_ACCESS_KEY
+      secret-key: YOUR_AWS_SECRET_KEY
+    sqs:
+      queue:
+        name: YOUR_SQS_QUEUE_NAME
+        url: YOUR_SQS_QUEUE_URL # Optional if name is provided and region is configured
+
+# Novu Configuration
+novu:
+  api:
+    key: YOUR_NOVU_API_KEY
+  # Add any other Novu specific configurations if needed
+  # e.g. Novu endpoint if it's not the default one used by the SDK
+
+logging:
+  level:
+    com.notification: INFO
+    org.springframework.web: INFO
+    io.novu: INFO
+    com.amazonaws: WARN
+
+# Management endpoints (optional, but good for health checks)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
